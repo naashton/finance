@@ -55,7 +55,7 @@ if (isset($_POST['send'])) {
 					$url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
 					header("Location:$url");
 					//header('Location:http://webdev.cislabs.uncw.edu/~naa5728/logged_in.php');
-				        exit();		
+                    exit();
 				}
 				else {
 					$errors[]='password';
@@ -67,46 +67,50 @@ if (isset($_POST['send'])) {
 }
 require 'includes/header.php';
 ?>
+    <!--ToDo: Alter the look of the password label to match the e-mail label -->
 	<main>
-        <h2>fiscally.SO</h2>
+        <h2>fiscally.so</h2>
         <p></p>
-        <form method="post" action="">
-			<fieldset>
-				<legend>Registered Users Login</legend>
-				<?php if ($missing || $errors) { ?>
-				<p class="warning">Please fix the item(s) indicated.</p>
-				<?php } ?>
-            <p>
-                <label for="email">Please enter your email address:
-				
-				<?php if ($missing && in_array('email', $missing)) { ?>
-                        <span class="warning">An email address is required</span>
-                    <?php } ?>
-				<?php if ($errors && in_array('email', $errors)) { ?>
-                        <span class="warning">The email address you provided is not associated with an account</span>
-                    <?php } ?>
-				</label>
-                <input name="email" id="email" type="text"
-				<?php if (isset($email) && !$errors['email']) {
-                    echo 'value="' . htmlspecialchars($email) . '"';
-                } ?>>
-            </p>
-			<p>
-				<?php if ($errors && in_array('password', $errors)) { ?>
-                        <span class="warning">The password supplied does not match the password for this email address. Please try again.</span>
-                    <?php } ?> </label>
-                <label for="pw">Password: 
-				
-				<?php if ($missing && in_array('password', $missing)) { ?>
-                        <span class="warning">Please enter a password</span>
-                    <?php } ?> </label>
-                <input name="password" id="pw" type="password">
-            </p>
-			
-            <p>
-                <input name="send" type="submit" value="Login">
-            </p>
-		</fieldset>
-        </form>
+        <div class="container">
+            <form method="post" action="" class="form-horizontal">
+                <div class="form-group">
+                    <fieldset>
+                        <legend>Registered Users Login</legend>
+                        <?php if ($missing || $errors) { ?>
+                        <p class="warning">Please fix the item(s) indicated.</p>
+                        <?php } ?>
+                    <p>
+                        <label class="control-label col-sm-2" for="email">Email:
+                            <div class="col-sm-4">
+                                <?php if ($missing && in_array('email', $missing)) { ?>
+                                        <span class="label label-danger">An email address is required</span>
+                                    <?php } ?>
+                                <?php if ($errors && in_array('email', $errors)) { ?>
+                                        <span class="label label-danger">The email address you provided is not associated with an account</span>
+                                    <?php } ?>
+                        </label>
+                                <input name="email" id="email" type="text"
+                                <?php if (isset($email) && !$errors['email']) {
+                                    echo 'value="' . htmlspecialchars($email) . '"';
+                                } ?>>
+                            </div>
+                    <p>
+                        <?php if ($errors && in_array('password', $errors)) { ?>
+                                <span class="label label-danger">The password supplied does not match the password for this email address. Please try again.</span>
+                            <?php } ?> </label>
+                        <label for="pw">Password:
+
+                        <?php if ($missing && in_array('password', $missing)) { ?>
+                                <span class="label label-danger">Please enter a password</span>
+                            <?php } ?> </label>
+                        <input name="password" id="pw" type="password">
+                    </p>
+
+                    <p>
+                        <input name="send" type="submit" value="Login">
+                    </p>
+                    </fieldset>
+            </form>
+        </div>
 	</main>
 <?php include './includes/footer.php'; ?>

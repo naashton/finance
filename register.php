@@ -5,7 +5,7 @@ if (isset($_GET['send'])) {
 	//Determine if name or email is missing and report
 	$missing = array();
 	$errors = array();
-    $email_exists = False;
+    //$email_exists = False;
 
 	$firstname = trim(filter_input(INPUT_GET, 'firstname', FILTER_SANITIZE_STRING)); //returns a string
 	if (empty($firstname))
@@ -18,25 +18,26 @@ if (isset($_GET['send'])) {
 	$valid_email = trim(filter_input(INPUT_GET, 'email', FILTER_VALIDATE_EMAIL));	//returns a string or null if empty or false if not valid
 	if (trim($_GET['email']==''))
 		$missing[] = 'email';
-		elseif (!$valid_email)
+    elseif (!$valid_email)
 		$errors[] = 'email';
-		else $email = $valid_email;
+    else $email = $valid_email;
 
     //Check for duplicate email address
     if(isset($email)) {
         $dup_sql = "SELECT emailAddr FROM finance_reg_users WHERE emailAddr = :email";
         $stmt1 = $conn->prepare($dup_sql);
         $stmt1->bindValue(':email', $email);
-        $success1 = $stmt1->execute();
-        $dup_email = $stmt1->fetch();
+        $stmt1->execute();
+
         $error_info = $stmt1 ->errorInfo();
 
-        if(!$dup_email)
-        /*if ($error_info[1] == 1062) 
-            $email_dup[] = 'email';
-            $email_exists = True;
-        */
+        $rows = $stmt1->rowCount();
+        if ($rows == 1){
+            $errors[] = 'dup_email';
+        }
     }
+
+
 
     //Password
     $password1 = trim(filter_input(INPUT_GET, 'password1', FILTER_SANITIZE_STRING));
@@ -52,7 +53,7 @@ if (isset($_GET['send'])) {
 	if (empty($accepted) || $accepted !='accepted')
 		$missing[] = 'accepted';
 
-	if (!$missing && !$errors && !$email_exists) {
+	if (!$missing && !$errors) {
         //require_once ('../../pdo_config.php'); // Connect to the db.
         $sql = "INSERT into finance_reg_users (firstName, lastName, emailAddr, pw) VALUES (:firstName, :lastName, :email, :pw)";
         $pw = 
@@ -64,10 +65,12 @@ if (isset($_GET['send'])) {
         $success = $stmt->execute();
         $errorInfo = $stmt->errorInfo();
 
-        if (isset($errorInfo[2]))
+        /*if (isset($errorInfo[2]))
             echo $errorInfo[2];
         else
-            echo '<main><h2>Thank you for registering</h2><h3>We have saved your information</h3></main>';
+        */
+
+        echo '<main><h2>Thank you for registering</h2><h3>We have saved your information</h3></main>';
 		include './includes/footer.php';
 		exit;
 	}
@@ -75,6 +78,7 @@ if (isset($_GET['send'])) {
 ?>
 
 	<main>
+        <div class="container">
         <h2>fiscally.SO</h2>
         <p>Register to get insider access to the financial tools you need.</p>
         <form method="get" action="register.php">
@@ -116,7 +120,7 @@ if (isset($_GET['send'])) {
                         <span class="warning">The email address you provided is not valid<  /span>
                     <?php } ?>
                 <!-- Check for duplicate email addresses -->
-                <?php if($email_exists) {
+                <?php if($errors && in_array('dup_email', $errors)) {
                 //if ($email_dup && in_array('email', $email_dup)) { ?>
                         <span class="warning">The email address you provided already exists in our system</span>
                     <?php } ?>
@@ -166,5 +170,6 @@ if (isset($_GET['send'])) {
             </p>
             </fieldset>
         </form>
+        </div>
 	</main>
 <?php include './includes/footer.php'; ?>
