@@ -5,17 +5,15 @@
  * Date: 11/12/2016
  * Time: 3:07 PM
  */
-//require '/include/header.php';
-    global $fv;
-
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-
 require './includes/header.php';
 //require_once ('../../pdo_config.php');
 
+/*
+ * =====================================================================================================================
+ * Get values the user input from the form and check for errors and missing values
+ */
 if (isset($_GET['send'])) {
-    //Check for errors
+    //Check for errors and missing values
     $missing = array();
     $errors = array();
 
@@ -50,8 +48,11 @@ if (isset($_GET['send'])) {
     }
      */
 }
-//============================================================================================
-//============================================================================================
+/*======================================================================================================================
+ * npvFormula takes 3 parameters and calculates the future value
+ * This is a basic function that can easily be expanded upon to calculate loan repayments,
+ * future values of investments, number of terms required to finish paying a loan, etc.
+ */
 
 /**
  * @param $pv the present value of the investment
@@ -70,6 +71,9 @@ function npvFormula($pv, $i, $n){
     $n = $n; //number of terms
     $pv = $pv; //present value
 
+    //Convert percent value to a decimal
+    $i = $i / 100;
+
     //Formula
     $fv = $pv * ((1 + $i) ** $n);
 
@@ -77,11 +81,6 @@ function npvFormula($pv, $i, $n){
 }
 ?>
 
-<!-- ======================================================================================= -->
-
-
-
-<!-- ====================================================================================== -->
 
 <main>
     <div class="container">
@@ -91,12 +90,12 @@ function npvFormula($pv, $i, $n){
             <fieldset>
                 <legend>NPV Calculator</legend>
                 <?php if ($missing || $errors) { ?>
-                    <p class="warning">Please fix the item(s) indicated.</p>
+                    <p class="label label-danger">Please fix the item(s) indicated.</p>
                 <?php  } ?>
                 <p>
                     <label for="pvalue">Present Value:
                         <?php if ($missing && in_array('pvalue', $missing)) { ?>
-                            <span class="warning">Please enter your first name</span>
+                            <span class="label label-danger">Please enter your first name</span>
                         <?php } ?> </label>
                     <input name="pvalue" id="pvalue" type="text"
                         <?php if (isset($pvalue)) {
@@ -107,7 +106,7 @@ function npvFormula($pv, $i, $n){
                 <p>
                     <label for="interest">Interest:
                         <?php if ($missing && in_array('interest', $missing)) { ?>
-                            <span class="warning">What is the interest rate?</span>
+                            <span class="label label-danger">What is the interest rate?</span>
                         <?php } ?> </label>
                     <input name="interest" id="interest" type="text"
                         <?php if (isset($interest)) {
@@ -118,7 +117,7 @@ function npvFormula($pv, $i, $n){
                 <p>
                     <label for="terms">Number of terms:
                         <?php if ($missing && in_array('terms', $missing)) { ?>
-                            <span class="warning">Enter the number of terms</span>
+                            <span class="label label-danger">Enter the number of terms</span>
                         <?php } ?>
                     </label>
                     <input name="terms" id="terms" type="text"

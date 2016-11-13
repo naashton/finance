@@ -85,12 +85,12 @@ if (isset($_GET['send'])) {
 			<fieldset>
 				<legend>Register</legend>
 				<?php if ($missing || $errors) { ?>
-				<p class="warning">Please fix the item(s) indicated.</p>
+				<p class="label label-danger">Please fix the item(s) indicated.</p>
 				<?php  } ?>
             <p>
                 <label for="firstname">First Name: 
 				<?php if ($missing && in_array('firstname', $missing)) { ?>
-                        <span class="warning">Please enter your first name</span>
+                        <span class="label label-danger">Please enter your first name</span>
                     <?php } ?> </label>
                 <input name="firstname" id="firstname" type="text"
 				 <?php if (isset($firstname)) {
@@ -102,7 +102,7 @@ if (isset($_GET['send'])) {
             <p>
                 <label for="lastname">Last Name: 
 				<?php if ($missing && in_array('lastname', $missing)) { ?>
-                        <span class="warning">Please enter your last name</span>
+                        <span class="label label-danger">Please enter your last name</span>
                     <?php } ?> </label>
                 <input name="lastname" id="lastname" type="text"
 				 <?php if (isset($lastname)) {
@@ -114,15 +114,15 @@ if (isset($_GET['send'])) {
             <p>
                 <label for="email">Email: 
 				<?php if ($missing && in_array('email', $missing)) { ?>
-                        <span class="warning">Please enter your email address</span>
+                        <span class="label label-danger">Please enter your email address</span>
                     <?php } ?>
 				<?php if ($errors && in_array('email', $errors)) { ?>
-                        <span class="warning">The email address you provided is not valid<  /span>
+                        <span class="label label-danger">The email address you provided is not valid<  /span>
                     <?php } ?>
                 <!-- Check for duplicate email addresses -->
                 <?php if($errors && in_array('dup_email', $errors)) {
                 //if ($email_dup && in_array('email', $email_dup)) { ?>
-                        <span class="warning">The email address you provided already exists in our system</span>
+                        <span class="label label-danger">The email address you provided already exists in our system</span>
                     <?php } ?>
 				</label>
                 <input name="email" id="email" type="text"
@@ -133,19 +133,19 @@ if (isset($_GET['send'])) {
             <!-- HTML Password-->
             <p>
                 <?php if ($errors && in_array('password', $errors)) { ?>
-                        <span class="warning">The entered passwords do not match. Please try again.</span>
+                        <span class="label label-danger">The entered passwords do not match. Please try again.</span>
                     <?php } ?> </label>
                 <label for="pw1">Password: 
                 
                 <?php if ($missing && in_array('password', $missing)) { ?>
-                        <span class="warning">Please enter a password</span>
+                        <span class="label label-danger">Please enter a password</span>
                     <?php } ?> </label>
                 <input name="password1" id="pw1" type="password">
             </p>
             <p>
                 <label for="pw2">Confirm Password: 
                 <?php if ($missing && in_array('password', $missing)) { ?>
-                        <span class="warning">Please confirm the password</span>
+                        <span class="label label-danger">Please confirm the password</span>
                     <?php } ?> </label>
                 <input name="password2" id="pw2" type="password">
             </p>
@@ -157,7 +157,7 @@ if (isset($_GET['send'])) {
             </p>
             <p>
 			<?php if ($missing && in_array('accepted', $missing)){?>
-					<span class="warning">You must agree to our terms</span><br>
+					<span class="label label-danger">You must agree to our terms</span><br>
 				<?php } ?>
                 <input type="checkbox" name="terms" value="accepted" id="terms"
                 <?php if($accepted){
