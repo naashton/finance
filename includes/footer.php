@@ -1,4 +1,5 @@
 	<footer>
+		<div class="container">
 		<p>&copy;
 		<?php
 			date_default_timezone_set("America/New_York");
@@ -11,6 +12,7 @@
 			}
 		?>
 		Nick Ashton</p>
+		</div>
 	</footer>
 </div>
 </body>

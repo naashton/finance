@@ -50,11 +50,11 @@ if (isset($_POST['send'])) {
 					setcookie('email',$email);
 					//redirect
 					//$_SERVER['HTTP_HOST'] = 'webdev.cislabs.uncw.edu';
-					//$_SERVER['PHP_SELF'] = '/~naa5728/logged_in.php';
-					//dirname($_SERVER['PHP_SELF']) = '/~naa5728/logged_in.php';
-					$url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
-					header("Location:$url");
-					//header('Location:http://webdev.cislabs.uncw.edu/~naa5728/logged_in.php');
+					//$_SERVER['PHP_SELF'] = '/~naa5728/finance_web/logged_in.php';
+					//dirname($_SERVER['PHP_SELF']) = '/~naa5728/finance_web/logged_in.php';
+					//$url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+					//header("Location:$url");
+					header('Location:http://webdev.cislabs.uncw.edu/~naa5728/finance_web/logged_in.php');
                     exit();
 				}
 				else {
@@ -69,9 +69,10 @@ require 'includes/header.php';
 ?>
     <!--ToDo: Alter the look of the password label to match the e-mail label -->
 	<main>
-        <h2>fiscally.so</h2>
-        <p></p>
-        <div class="container">
+		<div class="container">
+			<h2>fiscally.so</h2>
+        	<p></p>
+
             <form method="post" action="" class="form-horizontal">
                 <div class="form-group">
                     <fieldset>

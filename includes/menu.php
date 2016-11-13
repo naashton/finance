@@ -1,7 +1,9 @@
+
 <!-- Nick Ashton -->
 <!-- fiscally.so copyright header -->
 <!-- The menu.php file contains all of the navbar items pertinent to the webpage -->
-<?php $currentPage = basename($_SERVER['SCRIPT_FILENAME']); ?>
+<?php session_start();
+$currentPage = basename($_SERVER['SCRIPT_FILENAME']); ?>
 <div class="container">
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
