@@ -1,6 +1,6 @@
 <?php //This is the login page for registered users
 session_start();
-//require 'secure_conn.php';
+require 'secure_conn.php';
 //require 'includes/header.php';
 if (isset($_POST['send'])) {
 	$missing = array();

@@ -1,5 +1,6 @@
 <?php //Nick Ashton
 require './includes/header.php';
+require_once ('secure_conn.php');
 require_once ('../../pdo_config.php');
 if (isset($_GET['send'])) {
 	//Determine if name or email is missing and report
