@@ -2,22 +2,22 @@
 require './includes/header.php';
 require_once ('secure_conn.php');
 require_once ('../../pdo_config.php');
-if (isset($_GET['send'])) {
+if (isset($_POST['send'])) {
 	//Determine if name or email is missing and report
 	$missing = array();
 	$errors = array();
     //$email_exists = False;
 
-	$firstname = trim(filter_input(INPUT_GET, 'firstname', FILTER_SANITIZE_STRING)); //returns a string
+	$firstname = trim(filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_STRING)); //returns a string
 	if (empty($firstname))
 		$missing[]='firstname';
 	
-	$lastname = trim(filter_input(INPUT_GET, 'lastname', FILTER_SANITIZE_STRING)); 
+	$lastname = trim(filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_STRING));
 	if (empty($lastname))
 		$missing[]='lastname';
 	
-	$valid_email = trim(filter_input(INPUT_GET, 'email', FILTER_VALIDATE_EMAIL));	//returns a string or null if empty or false if not valid
-	if (trim($_GET['email']==''))
+	$valid_email = trim(filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL));	//returns a string or null if empty or false if not valid
+	if (trim($_POST['email']==''))
 		$missing[] = 'email';
     elseif (!$valid_email)
 		$errors[] = 'email';
@@ -41,8 +41,8 @@ if (isset($_GET['send'])) {
 
 
     //Password
-    $password1 = trim(filter_input(INPUT_GET, 'password1', FILTER_SANITIZE_STRING));
-    $password2 = trim(filter_input(INPUT_GET, 'password2', FILTER_SANITIZE_STRING));
+    $password1 = trim(filter_input(INPUT_POST, 'password1', FILTER_SANITIZE_STRING));
+    $password2 = trim(filter_input(INPUT_POST, 'password2', FILTER_SANITIZE_STRING));
     // Check for a password:
     if (empty($password1) || empty($password2)) 
         $missing[]='password';
@@ -50,7 +50,7 @@ if (isset($_GET['send'])) {
             $errors[] = 'password';
     else $password = $password1;
 
-	$accepted = filter_input(INPUT_GET, 'terms');
+	$accepted = filter_input(INPUT_POST, 'terms');
 	if (empty($accepted) || $accepted !='accepted')
 		$missing[] = 'accepted';
 
@@ -82,7 +82,7 @@ if (isset($_GET['send'])) {
         <div class="container">
         <h2>fiscally.SO</h2>
         <p>Register to get insider access to the financial tools you need.</p>
-        <form method="get" action="register.php">
+        <form method="post" action="register.php">
 			<fieldset>
 				<legend>Register</legend>
 				<?php if ($missing || $errors) { ?>

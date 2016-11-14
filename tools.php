@@ -28,6 +28,10 @@ if (isset($_GET['send'])) {
     $terms = trim(filter_input(INPUT_GET, 'terms', FILTER_SANITIZE_STRING));
     if (empty($terms))
         $missing[]='terms';
+
+    $years = trim(filter_input(INPUT_GET, 'years', FILTER_SANITIZE_STRING));
+    if (empty($years))
+        $missing[]='years';
     /**
     if (!$missing && !$errors) {
         //require_once ('../../pdo_config.php'); // Connect to the db.
@@ -60,7 +64,7 @@ if (isset($_GET['send'])) {
  * @param $n number of terms
  * @return int future value after calculating the compounding interest
  */
-function npvFormula($pv, $i, $n){
+function npvFormula($pv, $i, $y, $n){
     //These variables will be needed for future calculations, but possibly in different functions
     $p = 0; //principle
     $fv = 0; //future value
@@ -70,12 +74,31 @@ function npvFormula($pv, $i, $n){
     $i = $i; //interest
     $n = $n; //number of terms
     $pv = $pv; //present value
+    $y = $y; //number of years
+
+    //Convert terms
+    if($n == "annual"){
+        $n = 1;
+    }
+    elseif($n == "semiannual"){
+        $n = 2;
+    }
+    elseif ($n == "monthly"){
+        $n = 12;
+    }
+    elseif ($n == "weekly"){
+        $n = 52;
+    }
+
+    //Convert nominative interest rate to EAR
+    $ear = ((1 + $i/$n) ** $n) - 1;
 
     //Convert percent value to a decimal
     $i = $i / 100;
+    $ear = $ear / 100;
 
-    //Formula
-    $fv = $pv * ((1 + $i) ** $n);
+    //Calculate the future value using the effective annual interest rate
+    $fv = $pv * ((1 + $ear) ** $y);
 
     return $fv;
 }
@@ -115,17 +138,37 @@ function npvFormula($pv, $i, $n){
                     >
                 </p>
                 <p>
-                    <label for="terms">Number of terms:
-                        <?php if ($missing && in_array('terms', $missing)) { ?>
-                            <span class="label label-warning">Enter the number of terms</span>
+                    <label for="years">Number of years:
+                        <?php if ($missing && in_array('years', $missing)) { ?>
+                            <span class="label label-warning">Enter the number of years</span>
                         <?php } ?>
                     </label>
-                    <input name="terms" id="terms" type="text"
-                           <?php if (isset($terms)) {
-                               echo 'value="' . htmlspecialchars($terms) . '"';
+                    <input name="years" id="years" type="text"
+                           <?php if (isset($years)) {
+                               echo 'value="' . htmlspecialchars($years) . '"';
                            } ?>
                     >
                 </p>
+                <!----------------------------------------------------------------------------------------------------->
+                <!-- ToDo: Get terms from user via monthly, bimonthly, annual, semiannual, in order to calculate EAR -->
+                <p>
+                    <?php if ($missing && in_array('terms', $missing)) {?>
+                        <span class="label label-warning">Enter the number of terms</span>
+                    <?php }?>
+                    <label for="howhear">Frequency of compounding interest: </label>
+
+                    <select name="terms" id="terms">
+                        <option value="annual"
+                            <?php if($terms=="annual") { echo "selected"; }?>>Annual</option>
+                        <option value="semiannual"
+                            <?php if($terms=="semiannual"){ echo "selected"; }?>>Semi-Annual</option>
+                        <option value="monthly"
+                            <?php if($terms=="monthly"){ echo "selected"; }?>>Monthly</option>
+                        <option value="weekly"
+                            <?php if($terms=="weekly"){ echo "selected"; }?>>Weekly</option>
+                    </select>
+                </p>
+                <!----------------------------------------------------------------------------------------------------->
                 <p>
                     <input name="send" type="submit" value="Calculate">
                 </p>
@@ -134,7 +177,7 @@ function npvFormula($pv, $i, $n){
         <!-- Output the calculation -->
         <?php
         if (!$missing && !$errors) {
-            $fv_calc = npvFormula($pvalue, $interest, $terms);
+            $fv_calc = npvFormula($pvalue, $interest, $years, $terms);
             echo '<h2>';
             printf("The future value is: $%.2f", $fv_calc);
             echo '</h2>';

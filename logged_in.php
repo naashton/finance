@@ -11,6 +11,7 @@ require 'includes/header.php';
 ?>
 
 <main>
+    <div class="container">
     <?php
         if(isset($_SESSION) && isset($_SESSION['firstName'])){
             $firstname = $_SESSION['firstName'];
@@ -21,5 +22,6 @@ require 'includes/header.php';
 
         echo '<h2>'.$message.'</h2>';
     ?>
+    </div>
 </main>
 <?php include ('./includes/footer.php'); ?>

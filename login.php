@@ -49,6 +49,7 @@ if (isset($_POST['send'])) {
 					setcookie('firstName',$firstName);
 					setcookie('email',$email);
 					//redirect
+					//ToDO: redirect header using HTTP_HOST and PHP_SELF
 					//$_SERVER['HTTP_HOST'] = 'webdev.cislabs.uncw.edu';
 					//$_SERVER['PHP_SELF'] = '/~naa5728/finance_web/logged_in.php';
 					//dirname($_SERVER['PHP_SELF']) = '/~naa5728/finance_web/logged_in.php';
