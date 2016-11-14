@@ -90,12 +90,12 @@ function npvFormula($pv, $i, $n){
             <fieldset>
                 <legend>NPV Calculator</legend>
                 <?php if ($missing || $errors) { ?>
-                    <p class="label label-danger">Please fix the item(s) indicated.</p>
+                    <p class="label label-warning">Please fix the item(s) indicated.</p>
                 <?php  } ?>
                 <p>
                     <label for="pvalue">Present Value:
                         <?php if ($missing && in_array('pvalue', $missing)) { ?>
-                            <span class="label label-danger">Please enter your first name</span>
+                            <span class="label label-warning">Please enter your first name</span>
                         <?php } ?> </label>
                     <input name="pvalue" id="pvalue" type="text"
                         <?php if (isset($pvalue)) {
@@ -106,7 +106,7 @@ function npvFormula($pv, $i, $n){
                 <p>
                     <label for="interest">Interest:
                         <?php if ($missing && in_array('interest', $missing)) { ?>
-                            <span class="label label-danger">What is the interest rate?</span>
+                            <span class="label label-warning">What is the interest rate?</span>
                         <?php } ?> </label>
                     <input name="interest" id="interest" type="text"
                         <?php if (isset($interest)) {
@@ -117,7 +117,7 @@ function npvFormula($pv, $i, $n){
                 <p>
                     <label for="terms">Number of terms:
                         <?php if ($missing && in_array('terms', $missing)) { ?>
-                            <span class="label label-danger">Enter the number of terms</span>
+                            <span class="label label-warning">Enter the number of terms</span>
                         <?php } ?>
                     </label>
                     <input name="terms" id="terms" type="text"
