@@ -48,6 +48,7 @@ if (isset($_POST['send'])) {
 					//set cookies
 					setcookie('firstName',$firstName);
 					setcookie('email',$email);
+
 					//redirect
 					//ToDO: redirect header using HTTP_HOST and PHP_SELF
 					//$_SERVER['HTTP_HOST'] = 'webdev.cislabs.uncw.edu';

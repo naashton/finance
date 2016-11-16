@@ -8,8 +8,7 @@
 require './includes/header.php';
 //require_once ('../../pdo_config.php');
 
-/*
- * =====================================================================================================================
+/*======================================================================================================================
  * Get values the user input from the form and check for errors and missing values
  */
 if (isset($_GET['send'])) {
@@ -32,25 +31,7 @@ if (isset($_GET['send'])) {
     $years = trim(filter_input(INPUT_GET, 'years', FILTER_SANITIZE_STRING));
     if (empty($years))
         $missing[]='years';
-    /**
-    if (!$missing && !$errors) {
-        //require_once ('../../pdo_config.php'); // Connect to the db.
-        $sql = "INSERT into finance_reg_users (firstName, lastName, emailAddr, pw) VALUES (:firstName, :lastName, :email, :pw)";
-        $pw =
-        $stmt= $conn->prepare($sql);
-        $stmt->bindValue(':firstName', $firstname);
-        $stmt->bindValue(':lastName', $lastname);
-        $stmt->bindValue(':email', $email);
-        $stmt->bindValue(':pw', password_hash($password1, PASSWORD_DEFAULT));
-        $success = $stmt->execute();
-        $errorInfo = $stmt->errorInfo();
 
-
-        echo '<main><h2>Thank you for registering</h2><h3>We have saved your information</h3></main>';
-        include './includes/footer.php';
-        exit;
-    }
-     */
 }
 /*======================================================================================================================
  * npvFormula takes 3 parameters and calculates the future value
@@ -69,29 +50,30 @@ function npvFormula($pv, $i, $y, $n){
     $p = 0; //principle
     $fv = 0; //future value
     $pmt = 0;
+    $m = 1; //number of terms as an integer value
 
     //All values are needed to calculate the future value
     $i = $i; //interest
-    $n = $n; //number of terms
+    $n = $n; //number of terms as a string
     $pv = $pv; //present value
     $y = $y; //number of years
 
     //Convert terms
     if($n == "annual"){
-        $n = 1;
+        $m = 1;
     }
     elseif($n == "semiannual"){
-        $n = 2;
+        $m = 2;
     }
     elseif ($n == "monthly"){
-        $n = 12;
+        $m = 12;
     }
     elseif ($n == "weekly"){
-        $n = 52;
+        $m = 52;
     }
 
     //Convert nominative interest rate to EAR
-    $ear = ((1 + $i/$n) ** $n) - 1;
+    $ear = ((1 + $i/$m) ** $m) - 1;
 
     //Convert percent value to a decimal
     $i = $i / 100;
@@ -155,7 +137,7 @@ function npvFormula($pv, $i, $y, $n){
                     <?php if ($missing && in_array('terms', $missing)) {?>
                         <span class="label label-warning">Enter the number of terms</span>
                     <?php }?>
-                    <label for="howhear">Frequency of compounding interest: </label>
+                    <label for="terms">Frequency of compounding interest: </label>
 
                     <select name="terms" id="terms">
                         <option value="annual"

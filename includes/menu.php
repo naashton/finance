@@ -19,6 +19,11 @@ $currentPage = basename($_SERVER['SCRIPT_FILENAME']); ?>
                 <!--li class="active"><a href="#">Home</a></li>-->
                 <li><a href="index.php" <?php if ($currentPage == 'index.php') {echo 'id="here"'; } ?>>Home</a></li>
                 <li><a href="tools.php" <?php if ($currentPage == 'tools.php') {echo 'id="here"'; } ?>>Tools</a></li>
+
+                <!-- User menu item features below-->
+                <?php if(isset($_SESSION['firstName'])) {?>
+                <li><a href="uploads.php"> Uploads</a></li>
+                <?php } else {} ?>
             </ul>
 
             <!-- Check if there is an active user session -->

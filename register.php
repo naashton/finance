@@ -1,6 +1,6 @@
 <?php //Nick Ashton
-require './includes/header.php';
 require_once ('secure_conn.php');
+require './includes/header.php';
 require_once ('../../pdo_config.php');
 if (isset($_POST['send'])) {
 	//Determine if name or email is missing and report
@@ -25,6 +25,7 @@ if (isset($_POST['send'])) {
 
     //Check for duplicate email address
     if(isset($email)) {
+
         $dup_sql = "SELECT emailAddr FROM finance_reg_users WHERE emailAddr = :email";
         $stmt1 = $conn->prepare($dup_sql);
         $stmt1->bindValue(':email', $email);
@@ -56,14 +57,20 @@ if (isset($_POST['send'])) {
 
 	if (!$missing && !$errors) {
         //require_once ('../../pdo_config.php'); // Connect to the db.
-        $sql = "INSERT into finance_reg_users (firstName, lastName, emailAddr, pw) VALUES (:firstName, :lastName, :email, :pw)";
+
+        $folder = preg_replace("/[^a-zA-Z0-9]/", "", $email);
+        // make lowercase
+        $folder = strtolower($folder);
+
+        $sql = "INSERT into finance_reg_users (firstName, lastName, emailAddr, pw, folder) VALUES (:firstName, :lastName, :email, :pw, :folder)";
         $pw = 
         $stmt= $conn->prepare($sql);
         $stmt->bindValue(':firstName', $firstname);
         $stmt->bindValue(':lastName', $lastname);
         $stmt->bindValue(':email', $email);
         $stmt->bindValue(':pw', password_hash($password1, PASSWORD_DEFAULT));
-        $success = $stmt->execute();
+        $stmt->bindValue(':folders', $folder);
+        //$success = $stmt->execute();
         $errorInfo = $stmt->errorInfo();
 
         /*if (isset($errorInfo[2]))
@@ -72,6 +79,10 @@ if (isset($_POST['send'])) {
         */
 
         echo '<main><h2>Thank you for registering</h2><h3>We have saved your information</h3></main>';
+
+        $dirPath = "../../finance/".$folder;
+        mkdir($dirPath, 0777);
+
 		include './includes/footer.php';
 		exit;
 	}
