@@ -5,108 +5,87 @@
  * Date: 11/12/2016
  * Time: 3:07 PM
  */
-//require '/include/header.php';
-    global $fv;
-
-//----------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------
-
 require './includes/header.php';
-require_once ('../../pdo_config.php');
+//require_once ('../../pdo_config.php');
 
+/*======================================================================================================================
+ * Get values the user input from the form and check for errors and missing values
+ */
 if (isset($_GET['send'])) {
-    //Determine if name or email is missing and report
+    //Check for errors and missing values
     $missing = array();
     $errors = array();
-    //$email_exists = False;
 
     $pvalue = trim(filter_input(INPUT_GET, 'pvalue', FILTER_SANITIZE_STRING)); //returns a string
     if (empty($pvalue))
         $missing[]='pvalue';
 
-    $lastname = trim(filter_input(INPUT_GET, 'lastname', FILTER_SANITIZE_STRING));
-    if (empty($lastname))
-        $missing[]='lastname';
+    $interest = trim(filter_input(INPUT_GET, 'interest', FILTER_SANITIZE_STRING));
+    if (empty($interest))
+        $missing[]='interest';
 
-    $valid_email = trim(filter_input(INPUT_GET, 'email', FILTER_VALIDATE_EMAIL));	//returns a string or null if empty or false if not valid
-    if (trim($_GET['email']==''))
-        $missing[] = 'email';
-    elseif (!$valid_email)
-        $errors[] = 'email';
-    else $email = $valid_email;
+    $terms = trim(filter_input(INPUT_GET, 'terms', FILTER_SANITIZE_STRING));
+    if (empty($terms))
+        $missing[]='terms';
 
-    //Password
-    $password1 = trim(filter_input(INPUT_GET, 'password1', FILTER_SANITIZE_STRING));
-    $password2 = trim(filter_input(INPUT_GET, 'password2', FILTER_SANITIZE_STRING));
-    // Check for a password:
-    if (empty($password1) || empty($password2))
-        $missing[]='password';
-    elseif ($password1 !== $password2)
-        $errors[] = 'password';
-    else $password = $password1;
+    $years = trim(filter_input(INPUT_GET, 'years', FILTER_SANITIZE_STRING));
+    if (empty($years))
+        $missing[]='years';
 
-    $accepted = filter_input(INPUT_GET, 'terms');
-    if (empty($accepted) || $accepted !='accepted')
-        $missing[] = 'accepted';
-
-    /**
-    if (!$missing && !$errors) {
-        //require_once ('../../pdo_config.php'); // Connect to the db.
-        $sql = "INSERT into finance_reg_users (firstName, lastName, emailAddr, pw) VALUES (:firstName, :lastName, :email, :pw)";
-        $pw =
-        $stmt= $conn->prepare($sql);
-        $stmt->bindValue(':firstName', $firstname);
-        $stmt->bindValue(':lastName', $lastname);
-        $stmt->bindValue(':email', $email);
-        $stmt->bindValue(':pw', password_hash($password1, PASSWORD_DEFAULT));
-        $success = $stmt->execute();
-        $errorInfo = $stmt->errorInfo();
-
-     if (isset($errorInfo[2]))
-            echo $errorInfo[2];
-        else
-
-
-        echo '<main><h2>Thank you for registering</h2><h3>We have saved your information</h3></main>';
-        include './includes/footer.php';
-        exit;
-    }
-     */
 }
-//============================================================================================
-//============================================================================================
+/*======================================================================================================================
+ * npvFormula takes 3 parameters and calculates the future value
+ * This is a basic function that can easily be expanded upon to calculate loan repayments,
+ * future values of investments, number of terms required to finish paying a loan, etc.
+ */
 
-
-function npvFormula(){
+/**
+ * @param $pv the present value of the investment
+ * @param $i the interest rate
+ * @param $n number of terms
+ * @return int future value after calculating the compounding interest
+ */
+function npvFormula($pv, $i, $y, $n){
+    //These variables will be needed for future calculations, but possibly in different functions
     $p = 0; //principle
-    $i = .05; //interest
-    $n = 3; //number of terms
-    $pv = 100; //present value
     $fv = 0; //future value
     $pmt = 0;
+    $m = 1; //number of terms as an integer value
 
-    $fv = $pv * ((1 + $i) ** $n);
+    //All values are needed to calculate the future value
+    $i = $i; //interest
+    $n = $n; //number of terms as a string
+    $pv = $pv; //present value
+    $y = $y; //number of years
+
+    //Convert terms
+    if($n == "annual"){
+        $m = 1;
+    }
+    elseif($n == "semiannual"){
+        $m = 2;
+    }
+    elseif ($n == "monthly"){
+        $m = 12;
+    }
+    elseif ($n == "weekly"){
+        $m = 52;
+    }
+
+    //Convert nominative interest rate to EAR
+    $ear = ((1 + $i/$m) ** $m) - 1;
+
+    //Convert percent value to a decimal
+    $i = $i / 100;
+    $ear = $ear / 100;
+
+    //Calculate the future value using the effective annual interest rate
+    $fv = $pv * ((1 + $ear) ** $y);
 
     return $fv;
 }
 ?>
 
-<!-- ======================================================================================= -->
-
-<main>
-    <div class="container">
-        <h2>Loan Repayment Calculator</h2><br>
-        <h4>This website seeks to provide the investor with the information and tools to help make informed financial and investment decisions. The site is free to use for any user and registration will allow for users to make an investor profile so they can more proactively keep track of their portfolio.</h4>
-        <p><?php
-            echo npvFormula() . "<br>";
-            echo "The future value is: ". $fv . "<br>" ?></p>
-        <p><?php
-            printf("The future value is: $%.2f", npvFormula());
-            ?></p>
-    </div>
-</main>
-
-<!-- ====================================================================================== -->
 
 <main>
     <div class="container">
@@ -116,12 +95,12 @@ function npvFormula(){
             <fieldset>
                 <legend>NPV Calculator</legend>
                 <?php if ($missing || $errors) { ?>
-                    <p class="warning">Please fix the item(s) indicated.</p>
+                    <p class="label label-warning">Please fix the item(s) indicated.</p>
                 <?php  } ?>
                 <p>
                     <label for="pvalue">Present Value:
                         <?php if ($missing && in_array('pvalue', $missing)) { ?>
-                            <span class="warning">Please enter your first name</span>
+                            <span class="label label-warning">Please enter your first name</span>
                         <?php } ?> </label>
                     <input name="pvalue" id="pvalue" type="text"
                         <?php if (isset($pvalue)) {
@@ -130,77 +109,66 @@ function npvFormula(){
                     >
                 </p>
                 <p>
-                    <label for="lastname">Last Name:
-                        <?php if ($missing && in_array('lastname', $missing)) { ?>
-                            <span class="warning">Please enter your last name</span>
+                    <label for="interest">Interest:
+                        <?php if ($missing && in_array('interest', $missing)) { ?>
+                            <span class="label label-warning">What is the interest rate?</span>
                         <?php } ?> </label>
-                    <input name="lastname" id="lastname" type="text"
-                        <?php if (isset($lastname)) {
-                            echo 'value="' . htmlspecialchars($lastname) . '"';
+                    <input name="interest" id="interest" type="text"
+                        <?php if (isset($interest)) {
+                            echo 'value="' . htmlspecialchars($interest) . '"';
                         } ?>
                     >
                 </p>
                 <p>
-                    <label for="email">Email:
-                        <?php if ($missing && in_array('email', $missing)) { ?>
-                            <span class="warning">Please enter your email address</span>
+                    <label for="years">Number of years:
+                        <?php if ($missing && in_array('years', $missing)) { ?>
+                            <span class="label label-warning">Enter the number of years</span>
                         <?php } ?>
-                        <?php if ($errors && in_array('email', $errors)) { ?>
-                        <span class="warning">The email address you provided is not valid<  /span>
-                            <?php } ?>
-                            <!-- Check for duplicate email addresses -->
-                            <?php if($errors && in_array('dup_email', $errors)) {
-                                //if ($email_dup && in_array('email', $email_dup)) { ?>
-                                <span class="warning">The email address you provided already exists in our system</span>
-                            <?php } ?>
                     </label>
-                    <input name="email" id="email" type="text"
-                        <?php if (isset($email) && !$errors['email']) {
-                            echo 'value="' . htmlspecialchars($email) . '"';
-                        } ?>>
+                    <input name="years" id="years" type="text"
+                           <?php if (isset($years)) {
+                               echo 'value="' . htmlspecialchars($years) . '"';
+                           } ?>
+                    >
                 </p>
-                <!-- HTML Password-->
+                <!----------------------------------------------------------------------------------------------------->
+                <!-- ToDo: Get terms from user via monthly, bimonthly, annual, semiannual, in order to calculate EAR -->
                 <p>
-                    <?php if ($errors && in_array('password', $errors)) { ?>
-                        <span class="warning">The entered passwords do not match. Please try again.</span>
-                    <?php } ?> </label>
-                    <label for="pw1">Password:
+                    <?php if ($missing && in_array('terms', $missing)) {?>
+                        <span class="label label-warning">Enter the number of terms</span>
+                    <?php }?>
+                    <label for="terms">Frequency of compounding interest: </label>
 
-                        <?php if ($missing && in_array('password', $missing)) { ?>
-                            <span class="warning">Please enter a password</span>
-                        <?php } ?> </label>
-                    <input name="password1" id="pw1" type="password">
+                    <select name="terms" id="terms">
+                        <option value="annual"
+                            <?php if($terms=="annual") { echo "selected"; }?>>Annual</option>
+                        <option value="semiannual"
+                            <?php if($terms=="semiannual"){ echo "selected"; }?>>Semi-Annual</option>
+                        <option value="monthly"
+                            <?php if($terms=="monthly"){ echo "selected"; }?>>Monthly</option>
+                        <option value="weekly"
+                            <?php if($terms=="weekly"){ echo "selected"; }?>>Weekly</option>
+                    </select>
                 </p>
+                <!----------------------------------------------------------------------------------------------------->
                 <p>
-                    <label for="pw2">Confirm Password:
-                        <?php if ($missing && in_array('password', $missing)) { ?>
-                            <span class="warning">Please confirm the password</span>
-                        <?php } ?> </label>
-                    <input name="password2" id="pw2" type="password">
-                </p>
-
-                <p>
-                    <label for="comment">Comment on our website:
-                        <textarea rows="" cols=""></textarea>
-                    </label>
-                </p>
-                <p>
-                    <?php if ($missing && in_array('accepted', $missing)){?>
-                        <span class="warning">You must agree to our terms</span><br>
-                    <?php } ?>
-                    <input type="checkbox" name="terms" value="accepted" id="terms"
-                        <?php if($accepted){
-                            echo 'checked';
-                        }?>>
-                    <label for="terms">I accept the terms of using this website</label>
-                </p>
-                <p>
-                    <input name="send" type="submit" value="Send message">
+                    <input name="send" type="submit" value="Calculate">
                 </p>
             </fieldset>
         </form>
+        <!-- Output the calculation -->
+        <?php
+        if (!$missing && !$errors) {
+            $fv_calc = npvFormula($pvalue, $interest, $years, $terms);
+            echo '<h2>';
+            printf("The future value is: $%.2f", $fv_calc);
+            echo '</h2>';
+        }
+        ?>
+
     </div>
 </main>
+
 
 
 <?php require './includes/footer.php'; ?>

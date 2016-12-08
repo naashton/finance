@@ -1,6 +1,6 @@
 <?php //This is the login page for registered users
 session_start();
-//require 'secure_conn.php';
+require 'secure_conn.php';
 //require 'includes/header.php';
 if (isset($_POST['send'])) {
 	$missing = array();
@@ -48,7 +48,9 @@ if (isset($_POST['send'])) {
 					//set cookies
 					setcookie('firstName',$firstName);
 					setcookie('email',$email);
+
 					//redirect
+					//ToDO: redirect header using HTTP_HOST and PHP_SELF
 					//$_SERVER['HTTP_HOST'] = 'webdev.cislabs.uncw.edu';
 					//$_SERVER['PHP_SELF'] = '/~naa5728/finance_web/logged_in.php';
 					//dirname($_SERVER['PHP_SELF']) = '/~naa5728/finance_web/logged_in.php';

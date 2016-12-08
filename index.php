@@ -1,4 +1,6 @@
-<?php require './includes/header.php'; ?>
+<?php
+//require_once ('reg_conn.php');
+require './includes/header.php'; ?>
 <main>
 	<div class="container">
 	<h2>fiscally.SO is here with the financial tools you need</h2><br>
