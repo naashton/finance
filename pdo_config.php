@@ -1,7 +1,7 @@
 <?php
 	define(DBCONNSTRING,'mysql:host=127.0.0.1;dbname=naa5728');
-	define(DBUSER, 'naa5728');
-	define(DBPASS,'nyq14qn0');
+	define(DBUSER, '');
+	define(DBPASS,'');
 	try {
 		$conn= new PDO(DBCONNSTRING, DBUSER, DBPASS);
 		
